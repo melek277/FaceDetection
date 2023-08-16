@@ -1,3 +1,4 @@
 streamlit
-replicate
-os
+PIL
+cv2
+numpy
