@@ -1,4 +1,4 @@
 streamlit
-PIL
-cv2
+opencv-python
+Pillow
 numpy
