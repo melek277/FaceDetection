@@ -1,8 +1,6 @@
 import streamlit as st
 import cv2
 import numpy as np
-from PIL import ImageColor
-
 
 # Function to perform face detection
 def detect_faces(image, scaleFactor, minNeighbors):
@@ -33,7 +31,6 @@ def main():
     scaleFactor = st.slider("Scale Factor", 1.1, 2.0, 1.2, 0.1)
     minNeighbors = st.slider("Min Neighbors", 1, 10, 5)
     rect_color = st.color_picker("Rectangle Color", "#00FF00")
-    st.write(rect_color)
 
     save_button = st.button("Save Image")
 
@@ -49,22 +46,14 @@ def main():
         faces = detect_faces(frame, scaleFactor, minNeighbors)
 
         for (x, y, w, h) in faces:
-            color = ImageColor.getcolor(rect_color, "RGB")
-            #st.write(color)
+            # Convert color from hex to BGR
+            hex_color = rect_color.lstrip('#')
+            bgr_color = tuple(int(hex_color[i:i+2], 16) for i in (4, 2, 0))
 
-            def hex_to_rgb_normalized(hex_color):
-                hex_color = hex_color.lstrip('#')
-                return tuple(int(hex_color[i:i + 2], 16) / 255.0 for i in (0, 2, 4))
+            # Invert the color for rectangle
+            rect_color_inverted = tuple(255 - val for val in bgr_color)
 
-            #st.write(hex_to_rgb_normalized(rect_color))
-
-            def compl(rgb_color):
-                r, g, b = rgb_color
-                return (255 - r, 255 - g, 255 - b)
-
-
-            cv2.rectangle(frame, (x, y), (x + w, y + h), compl(color), 2)
-
+            cv2.rectangle(frame, (x, y), (x + w, y + h), rect_color_inverted, 2)
 
         frame_placeholder.image(frame, channels="BGR", caption="Camera Feed with Detected Faces", use_column_width=True)
 
